@@ -3,8 +3,6 @@ trigger:
 - releases/*
 - node6hotfixes/*
 
-resources:
-
 parameters:
 - name: build_single_task
   displayName: Build Single Task
