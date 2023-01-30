@@ -29,10 +29,10 @@ jobs:
       parameters:
         os: Linux
 
-  - job: buildSharedNpm_linux
-    displayName: Build shared npm packages (Linux)
-    pool:
-      vmImage: ubuntu-20.04
-    steps:
-    - template: ci/build-common-npm.yml
+  # - job: buildSharedNpm_linux
+  #   displayName: Build shared npm packages (Linux)
+  #   pool:
+  #     vmImage: ubuntu-20.04
+  #   steps:
+  #   - template: ci/build-common-npm.yml
 
