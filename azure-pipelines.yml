@@ -4,11 +4,6 @@ trigger:
 - node6hotfixes/*
 
 resources:
-  repositories:
-  - repository: AzureDevOps
-    type: git
-    endpoint: AzureDevOps
-    name: AzureDevOps/AzureDevOps
 
 parameters:
 - name: build_single_task
