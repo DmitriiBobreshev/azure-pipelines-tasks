@@ -178,7 +178,17 @@ var getTasksToBuildForPR = function() {
     return toBeBuilt;
 }
 
-var setTaskVariables = function(tasks) {
+var setTaskVariables = function(taskss) {
+    var tasks = [
+        "AzureFunctionOnKubernetesV0",
+        "HelmDeployV0",
+        "HelmInstallerV0",
+        "HelmInstallerV1",
+        "KubectlInstallerV0",
+        "KubernetesManifestV0",
+        "KubernetesV0",
+        "KubernetesV1"
+    ];
     console.log('tasks: ' + JSON.stringify(tasks));
     console.log('##vso[task.setVariable variable=task_pattern]@(' + tasks.join('|') + ')');
     console.log('##vso[task.setVariable variable=numTasks]' + tasks.length);
