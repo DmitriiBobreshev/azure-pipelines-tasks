@@ -74,16 +74,23 @@ class HelmRenderEngine extends RenderEngine {
 
 class KomposeRenderEngine extends RenderEngine {
     public bake = async (): Promise<any> => {
+        function resolve(...pathSegments: any[]): string {
+            const path = require('path');
+            var absolutePath = path.resolve.apply(this, pathSegments);
+            console.log(pathSegments + ' resolved to ' + absolutePath);
+            tl.debug('Absolute path for pathSegments: ' + pathSegments + ' = ' + absolutePath);
+            return absolutePath;
+        }
         console.log('dockerComposeFile')
         console.log(tl.getPathInput('dockerComposeFile'));
         console.log('dockerComposeFile resolve')
-        console.log(tl.resolve(tl.getPathInput('dockerComposeFile') || ''));
+        console.log(resolve(tl.getPathInput('dockerComposeFile')));
         console.log('tl.getVariable(build.sourcesDirectory)')
         console.log(tl.getVariable('build.sourcesDirectory'))
         console.log('tl.getVariable(system.defaultWorkingDirectory)')
         console.log(tl.getVariable('system.defaultWorkingDirectory'))
         console.log('resolve')
-        console.log(tl.resolve(tl.getVariable('build.sourcesDirectory') || tl.getVariable('system.defaultWorkingDirectory') || ''));
+        console.log(resolve(tl.getVariable('build.sourcesDirectory') || tl.getVariable('system.defaultWorkingDirectory') || ''));
 
         var pathValue = tl.resolve(tl.getPathInput('dockerComposeFile') || '');
         var repoRoot = tl.resolve(tl.getVariable('build.sourcesDirectory') || tl.getVariable('system.defaultWorkingDirectory') || '');
