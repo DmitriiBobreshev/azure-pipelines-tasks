@@ -74,25 +74,6 @@ class HelmRenderEngine extends RenderEngine {
 
 class KomposeRenderEngine extends RenderEngine {
     public bake = async (): Promise<any> => {
-        function resolve(...pathSegments: any[]): string {
-            const path = require('path');
-            var absolutePath = path.resolve.apply(this, pathSegments);
-            console.log(pathSegments + ' resolved to ' + absolutePath);
-            tl.debug('Absolute path for pathSegments: ' + JSON.stringify(pathSegments) + ' = ' + absolutePath);
-            return absolutePath;
-        }
-
-        var pathValue = tl.resolve(tl.getPathInput('dockerComposeFile') || '');
-        var repoRoot = tl.resolve(tl.getVariable('build.sourcesDirectory') || tl.getVariable('system.defaultWorkingDirectory') || '');
-        var supplied = pathValue !== repoRoot;
-        console.log([pathValue, repoRoot, supplied]);
-        console.log('dockerComposeFile path supplied :' + supplied);
-
-        var pathValue1 = resolve(tl.getPathInput('dockerComposeFile') || '');
-        var repoRoot1 = resolve(tl.getVariable('build.sourcesDirectory') || tl.getVariable('system.defaultWorkingDirectory') || '');
-        var supplied1 = pathValue1 !== repoRoot1;
-        console.log([pathValue1, repoRoot1, supplied1]);
-        console.log('dockerComposeFile path supplied :' + supplied1);
         if (!tl.filePathSupplied('dockerComposeFile')) {
             throw new Error(tl.loc('DockerComposeFilePathNotSupplied'));
         }
