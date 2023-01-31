@@ -86,7 +86,7 @@ class KomposeRenderEngine extends RenderEngine {
         console.log(tl.resolve(tl.getVariable('build.sourcesDirectory') || tl.getVariable('system.defaultWorkingDirectory') || ''));
 
         var pathValue = tl.resolve(tl.getPathInput('dockerComposeFile') || '');
-        var repoRoot = tl.resolve(exports.getVariable('build.sourcesDirectory') || exports.getVariable('system.defaultWorkingDirectory') || '');
+        var repoRoot = tl.resolve(tl.getVariable('build.sourcesDirectory') || tl.getVariable('system.defaultWorkingDirectory') || '');
         var supplied = pathValue !== repoRoot;
         console.log([pathValue, repoRoot, supplied]);
         console.log('dockerComposeFile path supplied :' + supplied);
