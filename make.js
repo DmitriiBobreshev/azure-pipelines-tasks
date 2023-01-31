@@ -368,13 +368,13 @@ CLI.test = function(/** @type {{ suite: string; node: string; task: string }} */
                 // setup the version of node to run the tests
                 util.installNode(nodeVersion);
 
-                if (nodeVersions.length - 1 === index) {
-                    run('nyc --report-dir ' + coverageTasksPath + ' mocha ' + testsSpec.join(' '), /*inheritStreams:*/true);
-                    renameCodeCoverageOutput(coverageTasksPath, taskName);
-                }
-                else {
+                // if (nodeVersions.length - 1 === index) {
+                //     run('nyc --report-dir ' + coverageTasksPath + ' mocha ' + testsSpec.join(' '), /*inheritStreams:*/true);
+                //     renameCodeCoverageOutput(coverageTasksPath, taskName);
+                // }
+                // else {
                     run('mocha ' + testsSpec.join(' '), /*inheritStreams:*/true);
-                }
+                // }
             }  catch (e) {
                 console.error(e);
                 process.exit(1);
