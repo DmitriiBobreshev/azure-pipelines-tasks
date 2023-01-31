@@ -19,6 +19,16 @@ parameters:
 
 jobs:
   # All tasks on Linux
+  - job: build_all_windows
+    displayName: Build all tasks (Windows)
+    timeoutInMinutes: 180
+    pool:
+      vmImage: windows-latest
+    steps:
+    - template: ci/build-all-steps.yml
+      parameters:
+        os: Windows
+
   - job: build_all_linux
     displayName: Build all tasks (Linux)
     timeoutInMinutes: 180
