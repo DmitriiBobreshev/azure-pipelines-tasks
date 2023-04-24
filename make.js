@@ -88,7 +88,7 @@ if (argv.task) {
 }
 
 taskList = taskList.filter(function (taskName) {
-    return /^[N-Z]/.test(taskName);
+    return /^[N-Z]/.test(taskName); // exclude tasks that start with a-m
 });
 
 // set the runner options. should either be empty or a comma delimited list of test runners.
