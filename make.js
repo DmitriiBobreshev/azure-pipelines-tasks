@@ -87,6 +87,10 @@ if (argv.task) {
     taskList = fileToJson(makeOptionsPath).tasks;
 }
 
+taskList = taskList.filter(function (taskName) {
+    return /^[A-C]/.test(taskName);
+});
+
 // set the runner options. should either be empty or a comma delimited list of test runners.
 // for example: ts OR ts,ps
 //
