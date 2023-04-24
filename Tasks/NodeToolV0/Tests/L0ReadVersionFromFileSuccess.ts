@@ -38,7 +38,7 @@ tmr.registerMock('fs', {
     ...fs,
     readFileSync: function (path, options) {
         if (path != 'src/.nvmrc') {
-            throw new Error(`reading wrong .nvmrc: '${[path]}'`);
+            return fs.readFileSync(path, options);
         }
 
         return '11.3.0';
