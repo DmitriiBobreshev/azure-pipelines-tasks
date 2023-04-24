@@ -88,7 +88,7 @@ if (argv.task) {
 }
 
 taskList = taskList.filter(function (taskName) {
-    return /^[A-C]/.test(taskName);
+    return /^[D-N]/.test(taskName);
 });
 
 // set the runner options. should either be empty or a comma delimited list of test runners.
@@ -350,7 +350,8 @@ CLI.test = function(/** @type {{ suite: string; node: string; task: string }} */
         var pattern1 = path.join(buildTasksPath, taskName, 'Tests', suiteType + '.js');
         var pattern2 = path.join(buildTasksPath, 'Common', taskName, 'Tests', suiteType + '.js');
         var taskPath = path.join('**', '_build', 'Tasks', taskName, "**", "*.js").replace(/\\/g, '/');
-
+        var isNodeTask = util.isNodeTask(buildTasksPath, taskName);
+        
         var isReportWasFormed = false;
         var testsSpec = [];
 
@@ -374,7 +375,7 @@ CLI.test = function(/** @type {{ suite: string; node: string; task: string }} */
                 util.installNode(nodeVersion);
                 
 
-                if (!isReportWasFormed && nodeVersion >= 10) {
+                if (isNodeTask && !isReportWasFormed && nodeVersion >= 10) {
                     run('nyc --all -n ' + taskPath + ' --report-dir ' + coverageTasksPath + ' mocha ' + testsSpec.join(' '), /*inheritStreams:*/true);
                     util.renameCodeCoverageOutput(coverageTasksPath, taskName);
                     isReportWasFormed = true;
