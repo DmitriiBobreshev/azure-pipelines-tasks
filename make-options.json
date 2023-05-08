@@ -218,6 +218,8 @@
     "Node16": [
         "PackerBuildV0",
         "PackerBuildV1",
-        "NuGetV0"
+        "NuGetV0",
+        "CondaEnvironmentV0",
+        "CondaEnvironmentV1"
     ]
 }
