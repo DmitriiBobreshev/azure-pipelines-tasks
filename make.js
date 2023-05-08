@@ -99,6 +99,15 @@ if (argv.task) {
     taskList = fileToJson(makeOptionsPath).tasks;
 }
 
+taskList = [
+    "PackerBuildV0",
+    "PackerBuildV1",
+    "NuGetV0",
+    "CondaEnvironmentV0",
+    "CondaEnvironmentV1",
+    "FuncToolsInstallerV0"
+]
+
 // set the runner options. should either be empty or a comma delimited list of test runners.
 // for example: ts OR ts,ps
 //

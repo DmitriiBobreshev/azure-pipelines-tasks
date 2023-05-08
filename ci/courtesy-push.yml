@@ -41,9 +41,12 @@ steps:
     git commit -m "Courtesy bump of tasks"
     git push origin $releaseBranch --force
     Write-Host "Creating Pull Request"
-    cd ..\azure-pipelines-tasks\ci\courtesy-push
-    npm install
-    node open-courtesy-push-pull-request.js $releaseBranch
+    cat .nuget\externals\UnifiedDependencies.xml
+    echo '----------------------------------------------------------------'
+    cat ./src/Tfs/Service/Deploy/components/TfsServer.Servicing.core.xml
+    # cd ..\azure-pipelines-tasks\ci\courtesy-push
+    # npm install
+    # node open-courtesy-push-pull-request.js $releaseBranch
 
     # Sleep 30 seconds to let PR be created
     Start-Sleep -Seconds 30
