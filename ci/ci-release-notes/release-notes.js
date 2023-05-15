@@ -171,12 +171,14 @@ async function createRelease(releaseNotes, version, releaseBranch) {
 
 async function main() {
     const version = argv.version;
-    const derivedFrom = argv.derivedFrom;
+    const derivedFrom = argv.derivedFrom || 'latest';
     const branch = argv.branch;
     const releaseBranch = argv.releaseBranch;
+    console.log(argv);
 
+    console.log({version, derivedFrom, branch, releaseBranch});
     try {
-        if (version === undefined) {
+        if (!version) {
             console.log('Error: You must supply a version');
             process.exit(-1);
         }
