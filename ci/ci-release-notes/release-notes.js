@@ -9,7 +9,7 @@ const OWNER = 'microsoft';
 const MYOWNER = 'DmitriiBobreshev';
 const REPO = 'azure-pipelines-tasks';
 const GIT = 'git';
-const VALID_RELEASE_RE = /^[0-9]{1,3}\.[0-9]{1,3}$/;
+const VALID_RELEASE_RE = /^[0-9]{1,3}$/;
 
 if (!argv.token) throw Exception('token is required');
 
@@ -170,13 +170,11 @@ async function createRelease(releaseNotes, version, releaseBranch) {
 }
 
 async function main() {
-    const version = argv.version;
+    const version = argv.version ? String(argv.version) : null;
     const derivedFrom = argv.derivedFrom || 'latest';
     const branch = argv.branch;
     const releaseBranch = argv.releaseBranch;
-    console.log(argv);
 
-    console.log({version, derivedFrom, branch, releaseBranch});
     try {
         if (!version) {
             console.log('Error: You must supply a version');
