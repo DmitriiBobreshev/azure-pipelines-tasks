@@ -147,11 +147,11 @@ steps:
       $releaseBranch = "releases/m" + $currentSprint + "." + $(currentDate)
 
       node ./ci-release-notes/release-notes.js --token $(GitHubPAT) --version $currentSprint --releaseBranch $releaseBranch
-  condition: |
-    and(
-      succeeded(),
-      in(variables['build.reason'], 'Schedule', 'Manual'),
-      eq(variables['COURTESY_PUSH'], 'true'),
-      eq(variables['Build.SourceBranch'], 'refs/heads/master')
-    )
-  displayName: Push release branch
+    condition: |
+      and(
+        succeeded(),
+        in(variables['build.reason'], 'Schedule', 'Manual'),
+        eq(variables['COURTESY_PUSH'], 'true'),
+        eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+    displayName: Push release branch
