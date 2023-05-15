@@ -137,7 +137,7 @@ steps:
         succeeded(),
         in(variables['build.reason'], 'Schedule', 'Manual'),
         eq(variables['COURTESY_PUSH'], 'true'),
-        eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        eq(variables['Build.SourceBranch'], 'refs/heads/test')
       )
     displayName: Push release branch
 
@@ -152,6 +152,6 @@ steps:
         succeeded(),
         in(variables['build.reason'], 'Schedule', 'Manual'),
         eq(variables['COURTESY_PUSH'], 'true'),
-        eq(variables['Build.SourceBranch'], 'refs/heads/master')
+        eq(variables['Build.SourceBranch'], 'refs/heads/test')
       )
-    displayName: Push release branch
+    displayName: Create Release
