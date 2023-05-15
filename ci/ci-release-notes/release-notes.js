@@ -179,7 +179,7 @@ async function createRelease(releaseNotes, version, releaseBranch) {
 async function main() {
     const version = argv.version ? String(argv.version) : null;
     const derivedFrom = argv.derivedFrom || 'latest';
-    const branch = argv.branch;
+    const branch = argv.branch || 'master';
     const releaseBranch = argv.releaseBranch;
 
     console.log({version, derivedFrom, branch, releaseBranch});
