@@ -16,13 +16,20 @@ if (!argv.token) throw Exception('token is required');
 const octokit = new Octokit({ auth: argv.token });
 
 function getDateForPRs(datetime) {
+    // TODO think maybe we don't need to do this
     const today = new Date();
-    const priorDate = new Date(new Date().setDate(today.getDate() - 30));
+    const maxDate = new Date(new Date().setDate(today.getDate() - 31));
+    const minDate = new Date(new Date().setDate(today.getDate() - 14));
     const passedDate = new Date(datetime);
 
-    if (passedDate.getTime() < priorDate.getTime()) {
-        console.log('passed date is older than 30 days');
-        return priorDate.toISOString();
+    if (passedDate.getTime() < maxDate.getTime()) {
+        console.log('passed date is older than 31 days');
+        return maxDate.toISOString();
+    }
+
+    if (passedDate.getTime() > minDate.getTime()) {
+        console.log('passed date is earlier than 14 days');
+        return maxDate.toISOString();
     }
 
     return passedDate.toISOString();
@@ -175,6 +182,7 @@ async function main() {
     const branch = argv.branch;
     const releaseBranch = argv.releaseBranch;
 
+    console.log({version, derivedFrom, branch, releaseBranch});
     try {
         if (!version) {
             console.log('Error: You must supply a version');
