@@ -146,7 +146,7 @@ steps:
       $currentSprint = (Invoke-WebRequest https://whatsprintis.it/sprint -Headers @{"Accept"="application/json"} | ConvertFrom-Json).sprint
       $releaseBranch = "releases/m" + $currentSprint + "." + $(currentDate)
 
-      node ./ci-release-notes/release-notes.js --token $(GitHubPAT) --version $currentSprint --releaseBranch $releaseBranch
+      node $(System.DefaultWorkingDirectory)/ci/ci-release-notes/release-notes.js --token $(GitHubPAT) --version $currentSprint --releaseBranch $releaseBranch
     condition: |
       and(
         succeeded(),
