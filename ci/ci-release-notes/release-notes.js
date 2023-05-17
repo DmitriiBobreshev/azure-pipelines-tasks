@@ -11,29 +11,9 @@ const REPO = 'azure-pipelines-tasks';
 const GIT = 'git';
 const VALID_RELEASE_RE = /^[0-9]{1,3}$/;
 
-if (!argv.token) throw Exception('token is required');
+if (!argv.token) throw Error('token is required');
 
 const octokit = new Octokit({ auth: argv.token });
-
-function getDateForPRs(datetime) {
-    // TODO think maybe we don't need to do this
-    const today = new Date();
-    const maxDate = new Date(new Date().setDate(today.getDate() - 31));
-    const minDate = new Date(new Date().setDate(today.getDate() - 14));
-    const passedDate = new Date(datetime);
-
-    if (passedDate.getTime() < maxDate.getTime()) {
-        console.log('passed date is older than 31 days');
-        return maxDate.toISOString();
-    }
-
-    if (passedDate.getTime() > minDate.getTime()) {
-        console.log('passed date is earlier than 14 days');
-        return maxDate.toISOString();
-    }
-
-    return passedDate.toISOString();
-}
 
 async function verifyNewReleaseTagOk(newRelease) {
     if (!newRelease || !newRelease.match(VALID_RELEASE_RE)) {
@@ -68,15 +48,12 @@ function checkGitStatus() {
 }
 
 async function getPRsFromDate(branch, date) {
-    const lastReleaseDate = new Date('2023-01-19').toISOString();
-    const toDate = new Date('2023-01-26').toISOString();
     const PRs = [];
     let page = 1;
     try {
         while (true) {
             const results = await octokit.search.issuesAndPullRequests({
                 q: `type:pr+is:merged+repo:${OWNER}/${REPO}+base:${branch}+merged:>=${date}`,
-                // q: `type:pr+is:merged+repo:${OWNER}/${REPO}+base:${branch}+merged:${lastReleaseDate}..${toDate}`,
                 order: 'asc',
                 sort: 'created',
                 per_page: 100,
@@ -107,7 +84,7 @@ async function fetchPRsSinceLastRelease(derivedFrom, branch) {
             console.log(`Getting release by tag ${tag}`);
 
             releaseInfo = await octokit.repos.getReleaseByTag({
-                owner: MYOWNER,
+                owner: OWNER,
                 repo: REPO,
                 tag: tag
             });
@@ -115,12 +92,12 @@ async function fetchPRsSinceLastRelease(derivedFrom, branch) {
             console.log('Getting latest release');
 
             releaseInfo = await octokit.repos.getLatestRelease({
-                owner: MYOWNER,
+                owner: OWNER,
                 repo: REPO
             });
         }
 
-        var lastReleaseDate = getDateForPRs(releaseInfo.data.published_at);
+        var lastReleaseDate = releaseInfo.data.published_at;
         console.log(`Fetching PRs merged since ${lastReleaseDate} on ${branch}`);
         try {
             return await getPRsFromDate(branch, lastReleaseDate);

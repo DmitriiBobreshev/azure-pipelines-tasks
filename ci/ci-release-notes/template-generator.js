@@ -14,7 +14,7 @@ function getTaskChangesFromPRs(PRs) {
         for (let task of PR.tasks) {
             if (!tasks[task]) tasks[task] = [];
 
-            tasks[task].push(` - [${date}] ${PR.title} (#${PR.number})`);
+            tasks[task].push(` - ${PR.title} (#${PR.number}) (${date})`);
         }
 
     });
@@ -23,10 +23,17 @@ function getTaskChangesFromPRs(PRs) {
 }
 
 function fillReleaseNotesTemplate(tasksChanges, version) {
-    let releaseNote = `# Release Notes for ${version}\n\n`;
+    let releaseNote = `# Sprint ${version}\n\n`;
     const tasks = Object.keys(tasksChanges).sort();
+    const reg = /(.*)(V[0-9]{1})$/;
+
     tasks.forEach(task => {
-        releaseNote += `## ${task}\n`;
+        const taskMatch = task.match(reg);
+        if (taskMatch && taskMatch.length > 2) {
+            releaseNote += `## ${taskMatch[1]} (${taskMatch[2]})\n`;
+        } else {
+            releaseNote += `## ${task}\n`;
+        }
         releaseNote += tasksChanges[task].join('\n');
         releaseNote += '\n\n';
     });
