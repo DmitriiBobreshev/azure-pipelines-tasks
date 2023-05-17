@@ -84,7 +84,7 @@ async function fetchPRsSinceLastRelease(derivedFrom, branch) {
             console.log(`Getting release by tag ${tag}`);
 
             releaseInfo = await octokit.repos.getReleaseByTag({
-                owner: OWNER,
+                owner: MYOWNER,
                 repo: REPO,
                 tag: tag
             });
@@ -92,7 +92,7 @@ async function fetchPRsSinceLastRelease(derivedFrom, branch) {
             console.log('Getting latest release');
 
             releaseInfo = await octokit.repos.getLatestRelease({
-                owner: OWNER,
+                owner: MYOWNER,
                 repo: REPO
             });
         }
@@ -145,9 +145,10 @@ async function createRelease(releaseNotes, version, releaseBranch) {
         owner: MYOWNER,
         repo: REPO,
         tag_name: tag,
+        name: tag,
         body: releaseNotes,
         target_commitish: releaseBranch,
-        generate_release_notes: true
+        generate_release_notes: false
     });
     console.log(`Release ${tag} created`);
     console.log(`Release URL: ${newRelease.data.html_url}`);
