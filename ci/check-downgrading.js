@@ -18,7 +18,6 @@ if (!packageEndpoint) {
 const packageToken = process.env['PACKAGE_TOKEN'];
 
 console.log(packageToken.split(''))
-console.log(packageEndpoint.split(''))
 
 const { RestClient } = require('typed-rest-client/RestClient');
 const { PersonalAccessTokenCredentialHandler } = require('typed-rest-client/Handlers');
