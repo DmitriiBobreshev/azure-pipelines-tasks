@@ -59,7 +59,7 @@ function checkMasterVersions(masterTasks, sprint, isReleaseTagExist, isCourtesyW
 
     messages.push({
       type: "warning",
-      payload: `[${targetBranch}] ${masterTask.name} has v${masterTask.version.version} it's higher than the current sprint ${allowedMinorVersion}`
+      payload: `[${targetBranch}] ${masterTask.name} has v${masterTask.version.version} it's higher than the current sprint ${sprint}`
     });
   }
 
@@ -248,6 +248,7 @@ async function main({ task, sprint, week }) {
       console.log(`##vso[task.logissue type=${message.type}]${message.payload}`);
     }
 
+    console.log('\nor you might have an outdated branch, try to merge/rebase your branch from master');
     process.exit(1);
   }
 }
