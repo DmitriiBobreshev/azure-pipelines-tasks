@@ -6,7 +6,7 @@ const {
 const { mkdir, rm } = require('shelljs');
 const { platform } = require('os');
 const { run, resolveTaskList } = require('./ci-util');
-const { eq, inc, parse, lte } = require('semver');
+const { eq, inc, parse, lte, neq } = require('semver');
 
 const packageEndpoint = process.env['PACKAGE_VERSIONS_ENDPOINT'];
 
@@ -59,7 +59,7 @@ function checkMasterVersions(masterTasks, sprint, isReleaseTagExist, isCourtesyW
 
     messages.push({
       type: "warning",
-      payload: ` - [${targetBranch}] ${masterTask.name} has v${masterTask.version.version} it's higher than the current sprint ${allowedMinorVersion}`
+      payload: `[${targetBranch}] ${masterTask.name} has v${masterTask.version.version} it's higher than the current sprint ${allowedMinorVersion}`
     });
   }
 
@@ -79,7 +79,7 @@ function compareLocalWithMaster(localTasks, masterTasks, sprint, isReleaseTagExi
     if (localTask.version.minor < sprint) {
       messages.push({
         type: 'error',
-        payload: ` - ${localTask.name} have to be upgraded from v${localTask.version.version} to v${sprint} at least`
+        payload: `${localTask.name} have to be upgraded from v${localTask.version.version} to v${sprint} at least`
       });
       continue;
     }
@@ -87,7 +87,7 @@ function compareLocalWithMaster(localTasks, masterTasks, sprint, isReleaseTagExi
     if (localTask.version.minor === sprint && eq(localTask.version, masterTask.version)) {
       messages.push({
         type: 'error',
-        payload: ` - ${localTask.name} have to be upgraded from v${localTask.version.version} to v${inc(masterTask.version, 'patch')} at least`
+        payload: `${localTask.name} have to be upgraded from v${localTask.version.version} to v${inc(masterTask.version, 'patch')} at least`
       });
       continue;
     }
@@ -95,7 +95,7 @@ function compareLocalWithMaster(localTasks, masterTasks, sprint, isReleaseTagExi
     if (localTask.version.minor === sprint && isCourtesyWeek) {
       messages.push({
         type: 'warning',
-        payload: ` - Be careful with task ${localTask.name} version and check it attentively as the current week is courtesy push week`
+        payload: `Be careful with task ${localTask.name} version and check it attentively as the current week is courtesy push week`
       });
       continue;
     }
@@ -103,7 +103,7 @@ function compareLocalWithMaster(localTasks, masterTasks, sprint, isReleaseTagExi
     if (localTask.version.minor > sprint && (!isReleaseTagExist && !isCourtesyWeek)) {
       messages.push({
         type: 'error',
-        payload: ` - [${sourceBranch}] ${localTask.name} has v${localTask.version.version} it's higher than the current sprint ${sprint}`
+        payload: `[${sourceBranch}] ${localTask.name} has v${localTask.version.version} it's higher than the current sprint ${sprint}`
       });
       continue;
     }
@@ -175,8 +175,8 @@ function compareLocalWithFeed(localTasks, feedTasks, sprint) {
     for (const feedTaskVersion of feedTask.versions) {
       if (feedTaskVersion.version.minor > sprint) {
         messages.push({
-          type: 'waring',
-          payload: ` - [Feed] ${feedTask.name} has v${feedTaskVersion.version.version} it's higher than the current sprint ${sprint}`
+          type: 'warning',
+          payload: `[Feed] ${feedTask.name} has v${feedTaskVersion.version.version} it's higher than the current sprint ${sprint}`
         });
         continue;
       }
@@ -184,9 +184,34 @@ function compareLocalWithFeed(localTasks, feedTasks, sprint) {
       if (lte(localTask.version, feedTaskVersion.version) && feedTaskVersion.isLatest) {
         messages.push({
           type: 'warning',
-          payload: ` - [Feed] ${localTask.name} local version ${localTask.version.version} less or equal than version in feed ${feedTaskVersion.version.version}`
+          payload: `[Feed] ${localTask.name} local version ${localTask.version.version} less or equal than version in feed ${feedTaskVersion.version.version}`
         });
       }
+    }
+  }
+
+  return messages;
+}
+
+function compareLocalTaskLoc(localTasks) {
+  const messages = [];
+
+  for (const localTask of localTasks) {
+    const taskLocJSONPath = join(__dirname, '..', 'Tasks' , localTask.name, 'task.loc.json');
+
+    if (!existsSync(taskLocJSONPath)) {
+      console.log(`##vso[task.logissue type=error]Task.json of ${localTask.name} does not exist by path ${taskLocJSONPath}`);
+      process.exit(1);
+    }
+
+    const taskLocJSONObject = JSON.parse(readFileSync(taskLocJSONPath, 'utf-8'));
+    const taskLocJSONVersion = [taskLocJSONObject.version.Major, taskLocJSONObject.version.Minor, taskLocJSONObject.version.Patch].join(".");
+    
+    if (neq(localTask.version, parse(taskLocJSONVersion))) {
+      messages.push({
+        type: 'ERROR',
+        payload: `[Loc] ${localTask.name} task.json version ${localTask.version.version} does not match with task.loc.json version ${taskLocJSONVersion}`
+      });
     }
   }
 
@@ -212,7 +237,8 @@ async function main({ task, sprint, week }) {
   const messages = [
     ...checkMasterVersions(masterTasks, sprint, isReleaseTagExist, isCourtesyWeek),
     ...compareLocalWithMaster(localTasks, masterTasks, sprint, isReleaseTagExist, isCourtesyWeek),
-    ...compareLocalWithFeed(localTasks, feedTasks, sprint)
+    ...compareLocalWithFeed(localTasks, feedTasks, sprint),
+    ...compareLocalTaskLoc(localTasks)
   ];
 
   if (messages.length > 0) {
