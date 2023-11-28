@@ -56,8 +56,8 @@ steps:
     PACKAGE_ENDPOINT: $(Package.Endpoint)
     PACKAGE_TOKEN: $(Package.Token)
 
-- script:
-    node -e "throw Error(1)"
+# - script:
+#     node -e "throw Error(1)"
 - script: node ./ci/before-build-check-tasks.js
   displayName: Check that tasks has no duplicated libs
   condition: |
