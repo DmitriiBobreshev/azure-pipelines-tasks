@@ -222,7 +222,6 @@
         "IISWebAppDeploymentOnMachineGroupV0"
     ],
     "Node20": [
-        "AndroidSigningV2",
         "AndroidSigningV3",
         "ANTV1",
         "ArchiveFilesV2",
