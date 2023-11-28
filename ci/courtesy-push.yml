@@ -54,6 +54,7 @@ steps:
     # TOKEN: $(Package.Token)
 
 - powershell: |
+    cd AzureDevOps
     cat Tfs\Service\Deploy\components\TfsServer.Servicing.core.xml
     cat .nuget\externals\UnifiedDependencies.xml
 
