@@ -107,7 +107,7 @@ jobs:
     variables:
       task_pattern: $[dependencies.build_all_windows.outputs['getTaskPattern.task_pattern']]
     pool:
-      name: windows-latest
+      vmImage: windows-latest
     steps:
     - template: ci/build-all-tasks.yml
 
