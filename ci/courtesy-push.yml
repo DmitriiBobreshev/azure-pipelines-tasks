@@ -4,8 +4,8 @@ steps:
     versionSpec: 6.0.0
   displayName: Install nuget
 
-- script: |
-    cd ..\azure-pipelines-tasks\ci\courtesy-push
+- powershell: |
+    cd ../azure-pipelines-tasks/ci/courtesy-push
     npm install
   displayName: npm install
 
@@ -46,16 +46,33 @@ steps:
     git commit -m "Courtesy bump of tasks"
     git push origin $releaseBranch --force
     Write-Host "Creating Pull Request"
-    node open-courtesy-push-pull-request.js $releaseBranch
 
     # Sleep 30 seconds to let PR be created
     Start-Sleep -Seconds 30
   displayName: Create PR in Azure DevOps
-  env:
-    TOKEN: $(Package.Token)
+  # env:
+    # TOKEN: $(Package.Token)
 
-- powershell: .\azure-pipelines-tasks\ci\courtesy-push\send-notification.ps1
-  displayName: Send MS Teams notification
-  condition: eq(variables['build.reason'], 'Schedule')
-  env:
-    TEAMS_WEBHOOK: $(MSTeamsUri)
+- powershell: |
+    cat Tfs\Service\Deploy\components\TfsServer.Servicing.core.xml
+    cat .nuget\externals\UnifiedDependencies.xml
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish per task NuGet package artifact
+  inputs:
+    pathToPublish: .nuget\externals\UnifiedDependencies.xml
+    artifactName: UnifiedDependencies
+    publishLocation: container
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish per task NuGet package artifact
+  inputs:
+    pathToPublish: Tfs\Service\Deploy\components\TfsServer.Servicing.core.xml
+    artifactName: TfsServer
+    publishLocation: container
+
+# - powershell: .\azure-pipelines-tasks\ci\courtesy-push\send-notification.ps1
+#   displayName: Send MS Teams notification
+#   condition: eq(variables['build.reason'], 'Schedule')
+#   env:
+#     TEAMS_WEBHOOK: $(MSTeamsUri)
